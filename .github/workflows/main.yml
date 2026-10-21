@@ -1,3 +1,4 @@
+
 name: Build Android APK
 
 on:
@@ -29,9 +30,19 @@ jobs:
       - name: Build Debug APK
         run: gradle --no-daemon assembleDebug
 
+      - name: Find generated APK files
+        if: always()
+        run: |
+          echo "Current directory:"
+          pwd
+          echo "APK files:"
+          find . -type f -name "*.apk" -print
+          echo "Build directories:"
+          find . -type d -path "*/build/outputs/apk*" -print
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: yadak-price-debug-apk
-          path: "/build/outputs/apk//*.apk"
+          path: "**/*.apk"
           if-no-files-found: error
